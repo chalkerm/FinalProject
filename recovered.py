@@ -31,4 +31,12 @@ def add_data(cur, conn):
             (counter, day, new_recovered, total_recovered))
             counter += 1
         conn.commit()
+
+def main():
+    # SETUP DATABASE AND TABLE
+    cur, conn = setUpDatabase('covid_tracking.db')
+    add_data(cur, conn)
+
+if __name__ == "__main__":
+    main()
     
