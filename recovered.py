@@ -16,9 +16,9 @@ def create_request_url(state, start_date, end_date):
     url = base_url + '/region/{}?date_from={}&date_to={}'.format(state, start_date, end_date)
     return url
 
-def add_data(cur, conn):
+def get_data():
     cur.execute('CREATE TABLE IF NOT EXISTS Recovered (key TEXT PRIMARY KEY, date TEXT UNIQUE, new_recovered INTEGER, total_recovered INTEGER)')
-    current_month = 4
+    current_month = 5
     end_month = current_month + 1
     d = {}
     d['dates'] = {}
@@ -37,19 +37,22 @@ def add_data(cur, conn):
                 d['dates'][day] = data['dates'][day]
         current_month += 1
         end_month += 1
-    counter = 0
-    while counter < len(d['dates']):
-        i = 0
-        while i < 25:
-            for date in d['dates']:
-                day = date
-                new_recovered = d['dates'][date]['countries']['US']['today_new_recovered']
-                total_recovered = d['dates'][date]['countries']['US']['today_recovered']
-                cur.execute("INSERT INTO Recovered (key, date, new_recovered, total_recovered) VALUES (?, ?, ?, ?)", 
-                (counter, day, new_recovered, total_recovered))
-                counter += 1
-                i += 1
-        conn.commit()
+    return d
+    
+    def add_recovered_data(cur, conn, d):
+        counter = 0
+        while counter < len(d['dates']):
+            i = 0
+            while i < 25:
+                for date in d['dates']:
+                    day = date
+                    new_recovered = d['dates'][date]['countries']['US']['today_new_recovered']
+                    total_recovered = d['dates'][date]['countries']['US']['today_recovered']
+                    cur.execute("INSERT INTO Recovered (key, date, new_recovered, total_recovered) VALUES (?, ?, ?, ?)", 
+                    (counter, day, new_recovered, total_recovered))
+                    counter += 1
+                    i += 1
+            conn.commit()
 
 def main():
     # SETUP DATABASE AND TABLE
