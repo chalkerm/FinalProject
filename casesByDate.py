@@ -95,6 +95,7 @@ def add_data_to_table(cur,conn):
     conn.commit()
 
 
+
 def main():
     cur,conn = setUpDatabase('casesByDate.db')
     month_table(cur,conn)
