@@ -71,6 +71,7 @@ def add_data_to_table(cur,conn):
     # (2) date (text in form of 2020-DD-MM)
     # (3) new_cases (integer)
     # (4) total_cases (integer)
+    # NOTE: Adds 25 items to the table at a time 
     data = clean_data()
     cur.execute('CREATE TABLE IF NOT EXISTS Cases (month_id INTEGER, date TEXT, new_cases INTEGER, total_cases INTEGER)')
     
