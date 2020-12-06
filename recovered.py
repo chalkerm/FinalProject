@@ -11,6 +11,7 @@ def setUpDatabase(db_name):
     return cur, conn
 
 def create_month_table(cur, conn):
+    cur.execute('DROP TABLE IF EXISTS Months')
     cur.execute('CREATE TABLE Months (key TEXT PRIMARY KEY, month_name TEXT)')
     i = 1
     month_lst = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
@@ -25,6 +26,7 @@ def create_month_table(cur, conn):
     conn.commit()
 
 def create_recovered_table(cur, conn):
+    # cur.execute('DROP TABLE IF EXISTS Recovered')
     cur.execute('CREATE TABLE IF NOT EXISTS Recovered (key TEXT PRIMARY KEY, date TEXT UNIQUE, month TEXT, new_recovered INTEGER, total_recovered INTEGER)')
     conn.commit()
 
@@ -58,21 +60,51 @@ def get_data():
 
     
 def add_recovered_data(cur, conn, d):
-    counter = 0
-    while counter < len(d['dates']):
-        i = 0
-        while i < 25:
-            for date in d['dates']:
-                day = date
-                new_recovered = d['dates'][date]['countries']['US']['today_new_recovered']
-                total_recovered = d['dates'][date]['countries']['US']['today_recovered']
-                cur.execute('SELECT month_name FROM Months WHERE key = ?', (day[5:7],))
-                month = cur.fetchone()[0]
-                cur.execute("INSERT INTO Recovered (key, date, month, new_recovered, total_recovered) VALUES (?, ?, ?, ?, ?)", 
-                (counter, day, month, new_recovered, total_recovered))
-                counter += 1
-                i += 1
-        conn.commit()
+    cur.execute('SELECT COUNT(*) FROM Recovered')
+    row = cur.fetchone()[0]
+    final = row + 25
+    for date in d['dates']:
+        if row < final and row <= len(d['dates']):
+            day = date
+            new_recovered = d['dates'][date]['countries']['US']['today_new_recovered']
+            total_recovered = d['dates'][date]['countries']['US']['today_recovered']
+            cur.execute('SELECT month_name FROM Months WHERE key = ?', (day[5:7],))
+            month = cur.fetchone()[0]
+            cur.execute("INSERT OR IGNORE INTO Recovered (key, date, month, new_recovered, total_recovered) VALUES (?, ?, ?, ?, ?)", 
+            (row, day, month, new_recovered, total_recovered))
+            cur.execute('SELECT COUNT(*) FROM Recovered')
+            row = cur.fetchone()[0]
+    conn.commit()
+
+    # counter = 0
+    # while counter < len(d['dates']):
+    #     i = 0
+    #     while i < 25:
+    #         for date in d['dates']:
+    #             day = date
+    #             new_recovered = d['dates'][date]['countries']['US']['today_new_recovered']
+    #             total_recovered = d['dates'][date]['countries']['US']['today_recovered']
+    #             cur.execute('SELECT month_name FROM Months WHERE key = ?', (day[5:7],))
+    #             month = cur.fetchone()[0]
+    #             cur.execute("INSERT INTO Recovered (key, date, month, new_recovered, total_recovered) VALUES (?, ?, ?, ?, ?)", 
+    #             (counter, day, month, new_recovered, total_recovered))
+    #             counter += 1
+    #             i += 1
+    #     conn.commit()
+
+def keep_running(cur, conn, d):
+    x = input("Would you like to add 25 rows? Please enter 'yes' or 'no'.")
+    while x != 'no':
+        cur.execute('SELECT COUNT(*) FROM Recovered')
+        row = cur.fetchone()[0]
+        if row + 25 > len(d['dates']):
+            add_recovered_data(cur, conn, d)
+            print("Data input complete")
+            break
+        else:
+            add_recovered_data(cur, conn, d)
+            x = input("Would you like to add 25 rows? Please enter 'yes' or 'no'.")
+
 
 def main():
     # SETUP DATABASE AND TABLE
@@ -80,8 +112,7 @@ def main():
     create_month_table(cur, conn)
     create_recovered_table(cur, conn)
     dic = get_data()
-    add_recovered_data(cur, conn, dic)
+    keep_running(cur, conn, dic)
 
 if __name__ == "__main__":
     main()
-    
