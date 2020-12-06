@@ -95,18 +95,6 @@ def add_data_to_table(cur,conn):
     conn.commit()
 
 
-    # for i in range(5,len(data)):
-    #     month_num = data[i][0][5:7]
-    #     cur.execute("SELECT month_id FROM months WHERE month_num = ?", (month_num,))
-    #     month_id = cur.fetchone()[0]
-    #     date = data[i][0]
-    #     total_cases = data[i][1]
-    #     new_cases = data[i][2]
-        # cur.execute("INSERT INTO Cases (month_id,date,new_cases, total_cases) VALUES (?,?,?,?)",(month_id,date, new_cases,total_cases,))
-    # conn.commit()
-
-
-
 def main():
     cur,conn = setUpDatabase('casesByDate.db')
     month_table(cur,conn)
