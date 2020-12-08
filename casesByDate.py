@@ -4,19 +4,8 @@ import unittest
 import os
 import sqlite3
 
-def month_table(cur,conn):
-   #creates a new table named months with three columns:
-    # (1) month_id (integer primary key)
-    # (2) month_num (text) 
-    # (2) month (text) 
-    months = ["May", "June", "July", "August", "September", "October"]
-    num_months = ["05","06","07", "08","09","10"]
-    cur.execute("DROP TABLE IF EXISTS months")
-    cur.execute("CREATE TABLE months (month_id INTEGER PRIMARY KEY,month_num TEXT, month TEXT)")
-    for i in range(0,len(months)):
-        cur.execute("INSERT INTO months (month_id,month_num,month) VALUES (?,?,?)", (i,num_months[i], months[i],))
-    conn.commit()
-    
+
+
     
 def get_data():
     # tries to request the data from the API if there is an error it prints "error when requesting data from API" 
@@ -66,13 +55,33 @@ def setUpDatabase(db_name):
     cur = conn.cursor()
     return cur, conn
 
+def month_table(cur,conn):
+    #loops through data returned from clean_data() and creates a list called month_list of all the unique month numbers
+    # creates a new table named months with two columns:
+    # (1) month_id (integer primary key)
+    # (2) month_num (text) 
+    data = clean_data() 
+    month_list= []
+    for tple in data:
+        month = tple[0][5:7]
+        if month not in month_list:
+            month_list.append(month)
+    
+    cur.execute("CREATE TABLE IF NOT EXISTS months (month_id INTEGER PRIMARY KEY,month_num TEXT)")
+    for i in range(0,len(month_list)):
+        cur.execute("INSERT INTO months (month_id,month_num) VALUES (?,?)", (i,month_list[i],))
+    conn.commit()
+
+
+
 def add_data_to_table(cur,conn):
-    # adds data (25 items each time the code is run) returned from the clean_data() function to a new table named Cases with five columns: 
+    # adds data (25 items at a time) returned from the clean_data() function to a new table named Cases with five columns: 
     # (1) id (integer primary key)
     # (2) month_id (text) HINT: Found from the months table 
     # (3) date (text in form of 2020-DD-MM)
     # (4) new_cases (integer)
     # (5) total_cases (integer)
+    # the function also calls month_table() only when Cases is empty 
     data = clean_data()
     cur.execute('CREATE TABLE IF NOT EXISTS Cases (id INTEGER PRIMARY KEY, month_id INTEGER, date TEXT, new_cases INTEGER, total_cases INTEGER)')
     data2 = data[5:]
@@ -81,9 +90,13 @@ def add_data_to_table(cur,conn):
 
     # only will happen the first time ran (when len(lst) == 0)
     start = 0 
+    
 
     if len(lst) > 0:
         start = int(lst[-1][0]) + 1
+    
+    if start == 0:
+        month_table(cur,conn)
     
    
     end = start + 25 
@@ -113,7 +126,6 @@ def add_data_to_table(cur,conn):
 
 def main():
     cur,conn = setUpDatabase('casesByDate.db')
-    month_table(cur,conn)
     add_data_to_table(cur,conn)
 
     
