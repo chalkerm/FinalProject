@@ -36,31 +36,46 @@ def get_data():
     return data
 
 def add_to_death_table(cur,conn,lst):
-    dic = {}
     stringLst = ["05", "06", "07","08","09","10"]
     cur.execute('SELECT COUNT(*) FROM DEATH')
     rows = cur.fetchone()[0]
     final = rows + 25
-    for dic in lst:
+    for i in range(len(lst)):
         if rows < final and rows <= len(lst):
-            if lst[dic]["date"][4:6] in stringLst:
-                deathConfirmed = lst[dic]["deathConfirmed"]
-                deathProbable = lst[dic]["deathProbable"]
-                death = lst[dic]["death"]
+            if str(lst[i]["date"])[4:6] in stringLst:
+                deathConfirmed = lst[i]["deathConfirmed"]
+                deathProbable = lst[i]["deathProbable"]
+                death = lst[i]["death"]
+                date = lst[i]["date"]
                 cur.execute("INSERT OR IGNORE INTO DEATH (key,date, death, deathProbable, deathConfirmed) VALUES (?, ?, ?, ?, ?)", 
                 (rows, date, death, deathProbable, deathConfirmed))
                 cur.execute('SELECT COUNT(*) FROM DEATH')
                 rows = cur.fetchone()[0]
+                i = i + 1
         conn.commit()
 
+def keep_running(cur, conn, lst):
+    x = input("Would you like to add 25 rows? Please enter 'yes' or 'no'.")
+    while x != 'no':
+        cur.execute('SELECT COUNT(*) FROM DEATH')
+        row = cur.fetchone()[0]
+        if row + 25 > len(lst):
+            add_to_death_table(cur, conn, lst)
+            print("Data input complete")
+            break
+        else:
+            add_to_death_table(cur, conn, lst)
+            x = input("Would you like to add 25 rows? Please enter 'yes' or 'no'.")
 
-    def main():
+
+def main():
     # SETUP DATABASE AND TABLE
         cur, conn = setUpDatabase('covid_tracking.db')
         #create_month_table(cur, conn)
         create_death_table(cur, conn)
         lst = get_data()
-        add_to_death_table(cur,conn,lst)
+        #add_to_death_table(cur,conn,lst)
+        keep_running(cur,conn,lst)
 
 if __name__ == "__main__":
     main()
