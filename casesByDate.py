@@ -63,7 +63,7 @@ def month_table(cur,conn):
     data = clean_data() 
     month_list= []
     for tple in data:
-        month = tple[0][5:7]
+        month = tple[0][0:7]
         if month not in month_list:
             month_list.append(month)
     
@@ -107,7 +107,7 @@ def add_data_to_table(cur,conn):
              i = i - 1
              break
          else:
-            month_num = data2[i][0][5:7]
+            month_num = data2[i][0][0:7]
             cur.execute("SELECT month_id FROM months2 WHERE month_num = ?", (month_num,))
             month_id = cur.fetchone()[0]
             date = data2[i][0]
@@ -121,6 +121,8 @@ def add_data_to_table(cur,conn):
     print("there is a total of " + str(len(data2)) + " items that you are able to put into the db\n")
     print("please run again to put more items in the db\n")
     print("======================================")
+
+
 
 
 
