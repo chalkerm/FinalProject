@@ -67,9 +67,9 @@ def month_table(cur,conn):
         if month not in month_list:
             month_list.append(month)
     
-    cur.execute("CREATE TABLE IF NOT EXISTS months (month_id INTEGER PRIMARY KEY,month_num TEXT)")
+    cur.execute("CREATE TABLE IF NOT EXISTS months2 (month_id INTEGER PRIMARY KEY,month_num TEXT)")
     for i in range(0,len(month_list)):
-        cur.execute("INSERT INTO months (month_id,month_num) VALUES (?,?)", (i,month_list[i],))
+        cur.execute("INSERT INTO months2 (month_id,month_num) VALUES (?,?)", (i,month_list[i],))
     conn.commit()
 
 
@@ -108,7 +108,7 @@ def add_data_to_table(cur,conn):
              break
          else:
             month_num = data2[i][0][5:7]
-            cur.execute("SELECT month_id FROM months WHERE month_num = ?", (month_num,))
+            cur.execute("SELECT month_id FROM months2 WHERE month_num = ?", (month_num,))
             month_id = cur.fetchone()[0]
             date = data2[i][0]
             total_cases = data2[i][1]
@@ -125,7 +125,7 @@ def add_data_to_table(cur,conn):
 
 
 def main():
-    cur,conn = setUpDatabase('casesByDate.db')
+    cur,conn = setUpDatabase('covid_tracking.db')
     add_data_to_table(cur,conn)
 
     
