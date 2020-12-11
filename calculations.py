@@ -55,10 +55,19 @@ def recovered_dictionary(cur, conn):
 
 def write_calculations(filename, d, data, dic):
     with open(os.path.join(os.path.abspath(os.path.dirname(__file__)), filename), 'w') as f:
+        i = 0
+        months = d.keys()
+        months_list = []
+        for month in months:
+            months_list.append(month)
+        
         for month in data:
-            f.write("Total COVID Cases for {} 2020: {} \n".format(month, data[month]))
+            f.write("Total COVID Cases for {} 2020: {} \n".format(months_list[i], data[month]))
+            i+=1
+        f.write("========================================\n")
         for item in dic:
             f.write("Total Deaths from COVID for {} 2020: {} \n".format(item, dic[item]))
+        f.write("========================================\n")
         for x in d:
             f.write("Total Recoveries from COVID for {} 2020: {} \n".format(x, d[x]))
         
@@ -128,9 +137,13 @@ def main():
     cur,conn = setUpDatabase('covid_tracking.db')
     data = cases_calculations(cur,conn)
     d = recovered_dictionary(cur,conn)
-    graphs(data,d)
 
-    write_calculations("calculations_outfile", d)
+    # deaths dict goes here
+    dic = {}
+
+
+    # graphs(data,d)
+    write_calculations("calculations_outfile", d,data,dic)
     
 
 if __name__ == "__main__":
