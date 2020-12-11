@@ -108,14 +108,14 @@ def graphs(data,d):
     # recoveries graph 
     recov = fig.add_subplot(312)
     x = d.keys()
-    names = []
-    values = []
+    names2 = []
+    values2 = []
     for thing in x:
-        names.append(thing)
+        names2.append(thing)
     y = d.values()
     for item in y:
-        values.append(item)
-    recov.plot(names, values, color='blue')
+        values2.append(item)
+    recov.plot(names2, values2, color='blue')
     recov.set_xlabel('Month Name')
     recov.set_ylabel('Number of Recovered Cases')
     recov.set_title('Number of COVID-19 Recoveries by Month in 2020')
@@ -142,7 +142,7 @@ def main():
     dic = {}
 
 
-    # graphs(data,d)
+    graphs(data,d)
     write_calculations("calculations_outfile", d,data,dic)
     
 
