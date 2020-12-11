@@ -127,14 +127,11 @@ def graphs(data,d):
 def main():
     cur,conn = setUpDatabase('covid_tracking.db')
     data = cases_calculations(cur,conn)
-<<<<<<< HEAD
-    d = recovered_for_graphing(cur,conn)
+   d = recovered_dictionary(cur,conn)
     graphs(data,d)
-    
-=======
+
     graph_cases(data)
-    d = recovered_dictionary(cur,conn)
->>>>>>> 47e1ba02ef17c077486ef1ad630735f4df49baa2
+
     write_calculations("calculations_outfile", d)
     
 
