@@ -50,19 +50,8 @@ def graph_cases(data):
     plt.title('Number of COVID-19 Cases by Month in 2020', color = 'purple')
     plt.show()
 
-def calculate_recovered_totals(cur, conn, month, filename):
-    ''' This function calculates the total number of recovered cases for each month. '''
-    total = 0
-    cur.execute('SELECT new_recovered FROM Recovered WHERE month = ?', (month, ) )
-    values = cur.fetchall()
-    for tup in values:
-        num = tup[0]
-        total += num
-    with open(os.path.join(os.path.abspath(os.path.dirname(__file__)), filename), 'w') as f:
-        f.write("Total Recoveries from COVID for {}: {} \n".format(month, total))
 
-
-def recovered_for_graphing(cur, conn):
+def recovered_dictionary(cur, conn):
     cur.execute('SELECT DISTINCT month FROM Recovered')
     data = cur.fetchall()
     months = []
@@ -105,7 +94,7 @@ def main():
     cur,conn = setUpDatabase('covid_tracking.db')
     data = cases_calculations(cur,conn)
     graph_cases(data)
-    d = recovered_for_graphing(cur,conn)
+    d = recovered_dictionary(cur,conn)
     write_calculations("calculations_outfile", d)
     graph_recovered(d)
 
