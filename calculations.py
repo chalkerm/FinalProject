@@ -93,7 +93,7 @@ def graphs(data,d):
     cases.set_xlabel('Month', color = 'purple')
     cases.set_ylabel('Cases', color = 'purple')
     cases.set_title('Number of COVID-19 Cases by Month in 2020', color = 'purple')
-    # cases.set_ylim(0,100000)
+    cases.set_ylim(0,60000)
    
 
     # recoveries graph 
@@ -110,7 +110,7 @@ def graphs(data,d):
     recov.set_xlabel('Month Name')
     recov.set_ylabel('Number of Recovered Cases')
     recov.set_title('Number of COVID-19 Recoveries by Month in 2020')
-    # recov.set_ylim(0,100000)
+    recov.set_ylim(0,60000)
 
   
     # deaths graph 
@@ -127,10 +127,8 @@ def graphs(data,d):
 def main():
     cur,conn = setUpDatabase('covid_tracking.db')
     data = cases_calculations(cur,conn)
-   d = recovered_dictionary(cur,conn)
+    d = recovered_dictionary(cur,conn)
     graphs(data,d)
-
-    graph_cases(data)
 
     write_calculations("calculations_outfile", d)
     
