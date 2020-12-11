@@ -76,7 +76,7 @@ def write_calculations(filename, d, data, dic):
         for item in dic:
             f.write("Total Deaths from COVID for {} 2020: {} \n".format(item, dic[item]))
         for x in d:
-            f.write("Total Recoveries from COVID for {} 2020: {} \n".format(item, d[item]))
+            f.write("Total Recoveries from COVID for {} 2020: {} \n".format(x, d[x]))
         
 
 def graph_recovered(d):
