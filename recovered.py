@@ -2,6 +2,7 @@ import sqlite3
 import json
 import os
 import requests
+import matplotlib.pyplot as plt
 
 # Create Database
 def setUpDatabase(db_name):
@@ -168,6 +169,32 @@ def calculate_recovered_totals(cur, conn, month, filename):
         f.write("Total Recoveries from COVID for {}: {}".format(month, total))
 
 
+def recovered_for_graphing(cur, conn):
+    cur.execute('SELECT DISTINCT month FROM Recovered')
+    data = cur.fetchall()
+    months = []
+    for info in data:
+        months.append(info[0])
+    d = {}
+    for month in months[:-1]:
+        cur.execute('SELECT new_recovered FROM Recovered WHERE month = ?', (month, ) )
+        values = cur.fetchall()
+        total = 0
+        for tup in values:
+            num = tup[0]
+            total += num
+        if month not in d:
+            d[month] = total
+    return d
+
+def graph_recovered(d):
+    x = d.keys()
+    y = d.values()
+    plt.bar(x, y, color='blue')
+    plt.xlabel('Month Name')
+    plt.ylabel('Number of Recovered Cases')
+    plt.show()
+
 def main():
     # SETUP DATABASE AND TABLES
     cur, conn = setUpDatabase('covid_tracking.db')
@@ -178,14 +205,18 @@ def main():
     #d = get_monthly_data()
     # keep_running(cur, conn, dic)
     #add_month_totals(cur, conn, d)
-    calculate_recovered_totals(cur, conn, 'May', 'calculations_file')
-    calculate_recovered_totals(cur, conn, 'June', 'calculations_file')
-    calculate_recovered_totals(cur, conn, 'July', 'calculations_file')
-    calculate_recovered_totals(cur, conn, 'August', 'calculations_file')
-    calculate_recovered_totals(cur, conn, 'September', 'calculations_file')
-    calculate_recovered_totals(cur, conn, 'October', 'calculations_file')
+    # calculate_recovered_totals(cur, conn, 'May', 'calculations_file')
+    # calculate_recovered_totals(cur, conn, 'June', 'calculations_file')
+    # calculate_recovered_totals(cur, conn, 'July', 'calculations_file')
+    # calculate_recovered_totals(cur, conn, 'August', 'calculations_file')
+    # calculate_recovered_totals(cur, conn, 'September', 'calculations_file')
+    # calculate_recovered_totals(cur, conn, 'October', 'calculations_file')
+    d = recovered_for_graphing(cur,conn)
+    graph_recovered(d)
+
 
 if __name__ == "__main__":
     main()
     
     
+
