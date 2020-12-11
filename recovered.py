@@ -93,8 +93,8 @@ def add_recovered_data(cur, conn, d):
     for date in d['dates']:
         if row < final and row <= len(d['dates']):
             day = date
-            new_recovered = d['dates'][date]['countries']['US']['today_new_recovered']
-            total_recovered = d['dates'][date]['countries']['US']['today_recovered']
+            new_recovered = d['dates'][date]['countries']['US']['regions'][0]['today_new_recovered']
+            total_recovered = d['dates'][date]['countries']['US']['regions'][0]['today_recovered']
             cur.execute('SELECT month_name FROM Months WHERE key = ?', (day[5:7],))
             month = cur.fetchone()[0]
             cur.execute("INSERT OR IGNORE INTO Recovered (key, date, month, new_recovered, total_recovered) VALUES (?, ?, ?, ?, ?)", 

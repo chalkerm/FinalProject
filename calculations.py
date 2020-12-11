@@ -34,19 +34,8 @@ def cases_calculations(cur,conn):
     return newCases_dict
 
 
-def calculate_recovered_totals(cur, conn, month, filename):
-    ''' This function calculates the total number of recovered cases for each month. '''
-    total = 0
-    cur.execute('SELECT new_recovered FROM Recovered WHERE month = ?', (month, ) )
-    values = cur.fetchall()
-    for tup in values:
-        num = tup[0]
-        total += num
-    with open(os.path.join(os.path.abspath(os.path.dirname(__file__)), filename), 'w') as f:
-        f.write("Total Recoveries from COVID for {}: {} \n".format(month, total))
 
-
-def recovered_for_graphing(cur, conn):
+def recovered_dictionary(cur, conn):
     cur.execute('SELECT DISTINCT month FROM Recovered')
     data = cur.fetchall()
     months = []
@@ -71,7 +60,7 @@ def write_calculations(filename, d, data, dic):
         for item in dic:
             f.write("Total Deaths from COVID for {} 2020: {} \n".format(item, dic[item]))
         for x in d:
-            f.write("Total Recoveries from COVID for {} 2020: {} \n".format(item, d[item]))
+            f.write("Total Recoveries from COVID for {} 2020: {} \n".format(x, d[x]))
         
 
 def graph_recovered(d):
@@ -138,9 +127,14 @@ def graphs(data,d):
 def main():
     cur,conn = setUpDatabase('covid_tracking.db')
     data = cases_calculations(cur,conn)
+<<<<<<< HEAD
     d = recovered_for_graphing(cur,conn)
     graphs(data,d)
     
+=======
+    graph_cases(data)
+    d = recovered_dictionary(cur,conn)
+>>>>>>> 47e1ba02ef17c077486ef1ad630735f4df49baa2
     write_calculations("calculations_outfile", d)
     
 
