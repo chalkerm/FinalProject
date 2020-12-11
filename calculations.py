@@ -10,16 +10,16 @@ import matplotlib.pyplot as plt
 
 
 def setUpDatabase(db_name):
-    # creates or finds a database with the passed in database name
+    ''' creates or finds a database with the passed in database name'''
     path = os.path.dirname(os.path.abspath(__file__))
     conn = sqlite3.connect(path+'/'+db_name)
     cur = conn.cursor()
     return cur, conn
 
 def cases_calculations(cur,conn):
-    # creates a list of the months from the month_num column in months2 table called
-    # returns a dictionary named newCases_dict where the key is the month_num from months2 table and the value is the total new cases from that month 
-    # the total new cases are calculated by adding up the new_cases column from that specific month by joining Cases and months2 tables
+    '''creates a list of the months from the month_num column in months2 table called
+     returns a dictionary named newCases_dict where the key is the month_num from months2 table and the value is the total new cases from that month 
+     the total new cases are calculated by adding up the new_cases column from that specific month by joining Cases and months2 tables '''
     newCases_dict = {}
     cur.execute("SELECT month_num FROM months2")
     months = cur.fetchall()
@@ -33,22 +33,6 @@ def cases_calculations(cur,conn):
         newCases_dict[month] = total   
     return newCases_dict
 
-def graph_cases(data):
-    names = []
-    values = []
-    for thing in data:
-        month = thing[5:]
-        case_total = data[thing]
-        names.append(month)
-        values.append(case_total)
-
-    # fig,ax = plt.subplots()
-    plt.grid()
-    plt.plot(names,values, color = 'purple', marker = '*')
-    plt.xlabel('Month', color = 'purple')
-    plt.ylabel('Cases', color = 'purple')
-    plt.title('Number of COVID-19 Cases by Month in 2020', color = 'purple')
-    plt.show()
 
 def calculate_recovered_totals(cur, conn, month, filename):
     ''' This function calculates the total number of recovered cases for each month. '''
@@ -98,16 +82,67 @@ def graph_recovered(d):
     plt.ylabel('Number of Recovered Cases')
     plt.show()
 
+def graphs(data,d):
+
+    fig = plt.figure(figsize=(5,10))
+   
+
+
+    # data and graph for Cases 
+    names = []
+    values = []
+    for thing in data:
+        month = thing[5:]
+        case_total = data[thing]
+        names.append(month)
+        values.append(case_total)
+
+
+    cases = fig.add_subplot(311)
+    cases.grid()
+    cases.plot(names,values, color = 'purple', marker = '*')
+    cases.set_xlabel('Month', color = 'purple')
+    cases.set_ylabel('Cases', color = 'purple')
+    cases.set_title('Number of COVID-19 Cases by Month in 2020', color = 'purple')
+    # cases.set_ylim(0,100000)
+   
+
+    # recoveries graph 
+    recov = fig.add_subplot(312)
+    x = d.keys()
+    names = []
+    values = []
+    for thing in x:
+        names.append(thing)
+    y = d.values()
+    for item in y:
+        values.append(item)
+    recov.plot(names, values, color='blue')
+    recov.set_xlabel('Month Name')
+    recov.set_ylabel('Number of Recovered Cases')
+    recov.set_title('Number of COVID-19 Recoveries by Month in 2020')
+    # recov.set_ylim(0,100000)
+
+  
+    # deaths graph 
+    deaths = fig.add_subplot(313)
+
+
+    plt.tight_layout()
+    plt.show()
+    fig.savefig("COVID_graphs.png")
+
 
 
 
 def main():
     cur,conn = setUpDatabase('covid_tracking.db')
     data = cases_calculations(cur,conn)
-    graph_cases(data)
     d = recovered_for_graphing(cur,conn)
+    graphs(data,d)
+    
     write_calculations("calculations_outfile", d)
-    graph_recovered(d)
+    
 
 if __name__ == "__main__":
     main()
