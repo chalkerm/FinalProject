@@ -156,16 +156,34 @@ def keep_running(cur, conn, d):
 
 
 
+def calculate_recovered_totals(cur, conn, month, filename):
+    ''' This function calculates the total number of recovered cases for each month. '''
+    total = 0
+    cur.execute('SELECT new_recovered FROM Recovered WHERE month = ?', (month, ) )
+    values = cur.fetchall()
+    for tup in values:
+        num = tup[0]
+        total += num
+    with open(os.path.join(os.path.abspath(os.path.dirname(__file__)), filename), 'w') as f:
+        f.write("Total Recoveries from COVID for {}: {}".format(month, total))
+
+
 def main():
     # SETUP DATABASE AND TABLES
     cur, conn = setUpDatabase('covid_tracking.db')
     create_month_table(cur, conn)
     create_recovered_table(cur, conn)
     #create_data_by_month(cur, conn)
-    dic = get_data()
+    # dic = get_data()
     #d = get_monthly_data()
-    keep_running(cur, conn, dic)
+    # keep_running(cur, conn, dic)
     #add_month_totals(cur, conn, d)
+    calculate_recovered_totals(cur, conn, 'May', 'calculations_file')
+    calculate_recovered_totals(cur, conn, 'June', 'calculations_file')
+    calculate_recovered_totals(cur, conn, 'July', 'calculations_file')
+    calculate_recovered_totals(cur, conn, 'August', 'calculations_file')
+    calculate_recovered_totals(cur, conn, 'September', 'calculations_file')
+    calculate_recovered_totals(cur, conn, 'October', 'calculations_file')
 
 if __name__ == "__main__":
     main()
