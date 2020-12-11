@@ -40,10 +40,6 @@ def create_recovered_table(cur, conn):
     cur.execute('CREATE TABLE IF NOT EXISTS Recovered (key TEXT PRIMARY KEY, date TEXT UNIQUE, month TEXT, new_recovered INTEGER, total_recovered INTEGER)')
     conn.commit()
 
-# def create_data_by_month(cur, conn):
-#     cur.execute('CREATE TABLE IF NOT EXISTS Monthly_Data (month TEXT, monthly_recovered INTEGER)')
-#     conn.commit()
-
 def create_request_url(state, start_date, end_date):
     ''' This function creates the URL for the API request. It requires information on 
     the state (in the US) for which data will be gathered, as well as a start date 
@@ -80,27 +76,6 @@ def get_data():
         current_month += 1
         end_month += 1
     return d
-
-# def get_monthly_data():
-#     current_month = 5
-#     end_month = current_month + 1
-#     d = {}
-#     while end_month <= 11:
-#         new_month = str(current_month)
-#         if len(new_month) == 1:
-#             new_month = '0' + new_month
-#         new_end_month = str(end_month)
-#         if len(new_end_month) == 1:
-#             new_end_month = '0' + new_end_month
-#         request_url = create_request_url('michigan', '2020-{}-01'.format(new_month), '2020-{}-01'.format(new_end_month))
-#         r = requests.get(request_url)
-#         data = json.loads(r.text)
-#         month = new_month
-#         d[month] = data['total']['today_recovered']
-#         current_month += 1
-#         end_month += 1
-#     return d
-
     
 def add_recovered_data(cur, conn, d):
     ''' This function loops through the data from the dictionary returned in get_data
@@ -147,72 +122,15 @@ def keep_running(cur, conn, d):
             add_recovered_data(cur, conn, d)
             x = input("Would you like to add 25 rows? Please enter 'yes' or 'no'.")
 
-# def add_month_totals(cur, conn, d):
-#     for key in d:
-#         month = key
-#         total = d[key]
-#         cur.execute("INSERT INTO Monthly_Data (month, monthly_recovered) VALUES (?, ?)", 
-#             (month, total))
-#     conn.commit()
-
-
-
-def calculate_recovered_totals(cur, conn, month, filename):
-    ''' This function calculates the total number of recovered cases for each month. '''
-    total = 0
-    cur.execute('SELECT new_recovered FROM Recovered WHERE month = ?', (month, ) )
-    values = cur.fetchall()
-    for tup in values:
-        num = tup[0]
-        total += num
-    with open(os.path.join(os.path.abspath(os.path.dirname(__file__)), filename), 'w') as f:
-        f.write("Total Recoveries from COVID for {}: {}".format(month, total))
-
-
-def recovered_for_graphing(cur, conn):
-    cur.execute('SELECT DISTINCT month FROM Recovered')
-    data = cur.fetchall()
-    months = []
-    for info in data:
-        months.append(info[0])
-    d = {}
-    for month in months[:-1]:
-        cur.execute('SELECT new_recovered FROM Recovered WHERE month = ?', (month, ) )
-        values = cur.fetchall()
-        total = 0
-        for tup in values:
-            num = tup[0]
-            total += num
-        if month not in d:
-            d[month] = total
-    return d
-
-def graph_recovered(d):
-    x = d.keys()
-    y = d.values()
-    plt.bar(x, y, color='blue')
-    plt.xlabel('Month Name')
-    plt.ylabel('Number of Recovered Cases')
-    plt.show()
 
 def main():
-    # SETUP DATABASE AND TABLES
+    # Sets up the database and tables. Makes API requests and stores information in dictionary.
+    # Loops through dictionary and adds appropriate data to Recovered table, 25 items at a time.
     cur, conn = setUpDatabase('covid_tracking.db')
     create_month_table(cur, conn)
     create_recovered_table(cur, conn)
-    #create_data_by_month(cur, conn)
-    # dic = get_data()
-    #d = get_monthly_data()
-    # keep_running(cur, conn, dic)
-    #add_month_totals(cur, conn, d)
-    calculate_recovered_totals(cur, conn, 'May', 'calculations_file')
-    calculate_recovered_totals(cur, conn, 'June', 'calculations_file')
-    calculate_recovered_totals(cur, conn, 'July', 'calculations_file')
-    calculate_recovered_totals(cur, conn, 'August', 'calculations_file')
-    calculate_recovered_totals(cur, conn, 'September', 'calculations_file')
-    calculate_recovered_totals(cur, conn, 'October', 'calculations_file')
-    d = recovered_for_graphing(cur,conn)
-    graph_recovered(d)
+    dic = get_data()
+    keep_running(cur, conn, dic)
 
 
 if __name__ == "__main__":
