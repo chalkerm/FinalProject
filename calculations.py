@@ -17,7 +17,7 @@ def setUpDatabase(db_name):
     return cur, conn
 
 def cases_calculations(cur,conn):
-    '''creates a list of the months from the month_num column in months2 table called
+    '''takes in cur,conn as input. reates a list of the months from the month_num column in months2 table.
      returns a dictionary named newCases_dict where the key is the month_num from months2 table and the value is the total new cases from that month 
      the total new cases are calculated by adding up the new_cases column from that specific month by joining Cases and months2 tables '''
     newCases_dict = {}
@@ -54,6 +54,9 @@ def recovered_dictionary(cur, conn):
     return d
 
 def write_calculations(filename, d, data, dic):
+    '''takes in a filename and 3 dictionaries where the key is the month and the value is the total. the function 
+    writes to the filename the total cases,deaths, and recoveries for each month. the function doesn't return anything.'''
+    
     with open(os.path.join(os.path.abspath(os.path.dirname(__file__)), filename), 'w') as f:
         i = 0
         months = d.keys()
@@ -72,15 +75,11 @@ def write_calculations(filename, d, data, dic):
             f.write("Total Recoveries from COVID for {} 2020: {} \n".format(x, d[x]))
         
 
-def graph_recovered(d):
-    x = d.keys()
-    y = d.values()
-    plt.bar(x, y, color='blue')
-    plt.xlabel('Month Name')
-    plt.ylabel('Number of Recovered Cases')
-    plt.show()
 
-def graphs(data,d):
+def graphs(cases_data,recov_d):
+    '''takes 3 dictionaries as input, each have the month as they key, and the value as the total for that month'''
+    '''the function creates 3 subplots displayed in 1 column, 3 rows'''
+    '''the function doesn't return anything but it shows the graphs and saves them as a png to COVID_graphs.png'''
 
     fig = plt.figure(figsize=(5,10))
    
@@ -89,9 +88,9 @@ def graphs(data,d):
     # data and graph for Cases 
     names = []
     values = []
-    for thing in data:
+    for thing in cases_data:
         month = thing[5:]
-        case_total = data[thing]
+        case_total = cases_data[thing]
         names.append(month)
         values.append(case_total)
 
@@ -107,12 +106,12 @@ def graphs(data,d):
 
     # recoveries graph 
     recov = fig.add_subplot(312)
-    x = d.keys()
+    x = recov_d.keys()
     names2 = []
     values2 = []
     for thing in x:
         names2.append(thing)
-    y = d.values()
+    y = recov_d.values()
     for item in y:
         values2.append(item)
     recov.plot(names2, values2, color='blue')
