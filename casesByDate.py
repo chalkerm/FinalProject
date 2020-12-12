@@ -49,7 +49,7 @@ def clean_data():
 
 
 def setUpDatabase(db_name):
-    '''creates a new database with the passed in database name and returns cur,conn'''
+    '''creates or finds a database with the passed in database name and returns cur,conn'''
     path = os.path.dirname(os.path.abspath(__file__))
     conn = sqlite3.connect(path+'/'+db_name)
     cur = conn.cursor()
