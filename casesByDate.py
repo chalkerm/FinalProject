@@ -85,7 +85,7 @@ def add_data_to_table(cur,conn):
     the function also calls month_table() only when Cases is empty.
     the function doesn't return anything'''
     data = clean_data()
-    cur.execute('CREATE TABLE IF NOT EXISTS Cases (id INTEGER PRIMARY KEY, month_id INTEGER, date TEXT, new_cases INTEGER, total_cases INTEGER)')
+    cur.execute('CREATE TABLE IF NOT EXISTS Cases (id INTEGER PRIMARY KEY, month_id INTEGER, new_cases INTEGER, total_cases INTEGER)')
     data2 = data[5:]
     cur.execute("SELECT id FROM Cases")
     lst = cur.fetchall()
@@ -112,16 +112,18 @@ def add_data_to_table(cur,conn):
             month_num = data2[i][0][0:7]
             cur.execute("SELECT month_id FROM months2 WHERE month_num = ?", (month_num,))
             month_id = cur.fetchone()[0]
-            date = data2[i][0]
             total_cases = data2[i][1]
             new_cases = data2[i][2]
-            cur.execute("INSERT INTO Cases (id, month_id,date,new_cases, total_cases) VALUES (?,?,?,?,?)",( i, month_id,date, new_cases,total_cases,))
+            cur.execute("INSERT INTO Cases (id, month_id,new_cases, total_cases) VALUES (?,?,?,?)",( i, month_id, new_cases,total_cases,))
     conn.commit()
 
     print("======================================")
     print("entered more items into database, you now have " + str(i + 1) + " items in the database\n")
     print("there is a total of " + str(len(data2)) + " items that you are able to put into the db\n")
-    print("please run again to put more items in the db\n")
+    if i+1 != 184:
+        print("please run again to put more items in the db\n")
+    else:
+        print("there is no more data to be inputted into the database\n")
     print("======================================")
 
 
