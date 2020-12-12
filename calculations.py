@@ -10,7 +10,7 @@ import matplotlib.pyplot as plt
 
 
 def setUpDatabase(db_name):
-    ''' creates or finds a database with the passed in database name'''
+    '''creates a new database with the passed in database name and returns cur,conn'''
     path = os.path.dirname(os.path.abspath(__file__))
     conn = sqlite3.connect(path+'/'+db_name)
     cur = conn.cursor()
@@ -56,7 +56,7 @@ def recovered_dictionary(cur, conn):
 def write_calculations(filename, d, data, dic):
     '''takes in a filename and 3 dictionaries where the key is the month and the value is the total. the function 
     writes to the filename the total cases,deaths, and recoveries for each month. the function doesn't return anything.'''
-    
+
     with open(os.path.join(os.path.abspath(os.path.dirname(__file__)), filename), 'w') as f:
         i = 0
         months = d.keys()

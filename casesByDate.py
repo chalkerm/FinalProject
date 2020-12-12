@@ -8,9 +8,9 @@ import sqlite3
 
     
 def get_data():
-    # tries to request the data from the API if there is an error it prints "error when requesting data from API" 
-    # and creates an empty dict. if the request is successful, the function loops through the data and adds only the data from 
-    # the months May through October to a list named MayThruOct and returns the list.
+    ''' this funciton tries to request the data from the API if there is an error it prints "error when requesting data from API" 
+     and creates an empty dict. if the request is successful, the function loops through the data and adds only the data from 
+    the months May through October to a list named MayThruOct and returns the list.'''
     try:
         # get the data from the url only from MI 
         url = "https://data.cdc.gov/resource/9mfq-cb36.json?state=MI"
@@ -33,10 +33,10 @@ def get_data():
     return mayThruOct
 
 def clean_data():
-    # takes returned data from get_data() and creates a list of tuples and returns it.
-    # Each tuple includes (date, total cases, new cases)
-    # the date should be a string in the form of 2020-DD-MM
-    # total cases should become an int and new cases should become a real
+    '''this function calls get_data() and loops through the data and creates a list of tuples and returns it.
+     Each tuple includes (date, total cases, new cases)
+     the date should be a string in the form of 2020-MM-DD
+    total cases should become an int and new cases should become a real'''
     tuples = []
     data = get_data()
     for thing in data:
@@ -49,17 +49,18 @@ def clean_data():
 
 
 def setUpDatabase(db_name):
-    # creates a new database with the passed in database name
+    '''creates a new database with the passed in database name and returns cur,conn'''
     path = os.path.dirname(os.path.abspath(__file__))
     conn = sqlite3.connect(path+'/'+db_name)
     cur = conn.cursor()
     return cur, conn
 
 def month_table(cur,conn):
-    #loops through data returned from clean_data() and creates a list called month_list of all the unique month numbers
-    # creates a new table named months with two columns:
-    # (1) month_id (integer primary key)
-    # (2) month_num (text) 
+    '''this function takes in cur,conn and loops through data returned from clean_data() and creates a list called month_list of all the unique month numbers
+     creates a new table named months with two columns:
+    (1) month_id (integer primary key)
+    (2) month_num (text)
+    the function doesn't return anything. '''
     data = clean_data() 
     month_list= []
     for tple in data:
@@ -75,13 +76,14 @@ def month_table(cur,conn):
 
 
 def add_data_to_table(cur,conn):
-    # adds data (25 items at a time) returned from the clean_data() function to a new table named Cases with five columns: 
-    # (1) id (integer primary key)
-    # (2) month_id (text) HINT: Found from the months table 
-    # (3) date (text in form of 2020-DD-MM)
-    # (4) new_cases (integer)
-    # (5) total_cases (integer)
-    # the function also calls month_table() only when Cases is empty 
+    ''' the input is in cur,conn. the function adds data (25 items at a time) returned from the clean_data() function to a new table named Cases with five columns: 
+    (1) id (integer primary key)
+    (2) month_id (text) HINT: Found from the months2 table 
+    (3) date (text in form of 2020-DD-MM)
+    (4) new_cases (integer)
+    (5) total_cases (integer)
+    the function also calls month_table() only when Cases is empty.
+    the function doesn't return anything'''
     data = clean_data()
     cur.execute('CREATE TABLE IF NOT EXISTS Cases (id INTEGER PRIMARY KEY, month_id INTEGER, date TEXT, new_cases INTEGER, total_cases INTEGER)')
     data2 = data[5:]
