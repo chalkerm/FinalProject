@@ -25,11 +25,12 @@ def create_month_table(cur, conn):
     conn.commit()
 
 def create_death_table(cur, conn):
-    cur.execute('CREATE TABLE IF NOT EXISTS DEATH (key TEXT PRIMARY KEY, date TEXT UNIQUE, death INTEGER, deathProbable INTEGER, deathConfirmed)')
+    cur.execute('CREATE TABLE IF NOT EXISTS DEATH (key TEXT PRIMARY KEY, date TEXT UNIQUE, month TEXT, death INTEGER, deathProbable INTEGER, deathConfirmed)')
     conn.commit()
 
 def get_data():
-    ''' Date should be in the format YYYY-MM-DD '''
+    ''' This function creates the URL for the API request. It requires information on 
+    the state- Michigan (in the US) for which data will be gathered.'''
     base_url = "https://api.covidtracking.com/v1/states/mi/daily.json"
     r = requests.get(base_url)
     data = json.loads(r.text)
@@ -47,8 +48,10 @@ def add_to_death_table(cur,conn,lst):
                 deathProbable = lst[i]["deathProbable"]
                 death = lst[i]["death"]
                 date = lst[i]["date"]
-                cur.execute("INSERT OR IGNORE INTO DEATH (key,date, death, deathProbable, deathConfirmed) VALUES (?, ?, ?, ?, ?)", 
-                (rows, date, death, deathProbable, deathConfirmed))
+                cur.execute('SELECT month_name FROM Months WHERE key = ?', (str(date)[4:6],))
+                month = cur.fetchone()[0]
+                cur.execute("INSERT OR IGNORE INTO DEATH (key, date, month, death, deathProbable, deathConfirmed) VALUES (?, ?, ?, ?, ?, ?)", 
+                (rows, date, month, death, deathProbable, deathConfirmed))
                 cur.execute('SELECT COUNT(*) FROM DEATH')
                 rows = cur.fetchone()[0]
                 i = i + 1
@@ -59,7 +62,7 @@ def keep_running(cur, conn, lst):
     while x != 'no':
         cur.execute('SELECT COUNT(*) FROM DEATH')
         row = cur.fetchone()[0]
-        if row + 25 > len(lst):
+        if row + 25 > 185:
             add_to_death_table(cur, conn, lst)
             print("Data input complete")
             break
@@ -79,3 +82,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
