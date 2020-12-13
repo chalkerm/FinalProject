@@ -130,8 +130,8 @@ def graphs(cases_data,recov_d):
 
 
     plt.tight_layout()
-    # plt.show()
-    # fig.savefig("COVID_graphs.png")
+    plt.show()
+    fig.savefig("COVID_graphs.png")
 
     # stacked bar graph of deaths vs recoveries
     figure, ax = plt.subplots()
