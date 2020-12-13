@@ -5,6 +5,7 @@ import os
 import sqlite3
 import matplotlib
 import matplotlib.pyplot as plt 
+import numpy as np
 
 
 
@@ -85,7 +86,7 @@ def graphs(cases_data,recov_d):
     '''the function creates 3 subplots displayed in 1 column, 3 rows'''
     '''the function doesn't return anything but it shows the graphs and saves them as a png to COVID_graphs.png'''
 
-    fig = plt.figure(figsize=(5,10))
+    fig = plt.figure(figsize=(5,12))
    
 
 
@@ -109,7 +110,7 @@ def graphs(cases_data,recov_d):
    
 
     # recoveries graph 
-    recov = fig.add_subplot(312)
+    recov = fig.add_subplot(313)
     x = recov_d.keys()
     names2 = []
     values2 = []
@@ -130,26 +131,22 @@ def graphs(cases_data,recov_d):
 
   
     # deaths graph 
-    deaths = fig.add_subplot(313)
-
-
-    plt.tight_layout()
-    plt.show()
-    fig.savefig("COVID_graphs.png")
-
+    deaths = fig.add_subplot(312)
     # stacked bar graph of deaths vs recoveries
-    figure, ax = plt.subplots()
-    #ax = fig.add_subplot(314)
     width = 0.35
     labels = names2
-    deaths = values # using cases until deaths ready
+    deaths_lst = values # using cases until deaths ready
     recoveries = values2
-    ax.bar(labels, deaths, width, label='Deaths', color='red')
-    ax.bar(labels, recoveries, width, bottom=deaths, label='Recoveries', color='blue')
-    ax.set_ylabel('Number of Deaths')
-    ax.set_xlabel("Month Name")
-    ax.legend()
+    deaths.bar(labels, deaths_lst, width, label='Deaths', color='red')
+    deaths.bar(labels, recoveries, width, bottom=deaths_lst, label='Recoveries', color='blue')
+    deaths.set_ylabel('Number of Deaths')
+    deaths.set_xlabel("Month Name")
+    deaths.legend()
+
+
     
+    plt.tight_layout()
+    fig.savefig("COVID_graphs.png")
     plt.show()
     
 
