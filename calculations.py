@@ -142,6 +142,22 @@ def graphs(cases_data,recov_d):
     deaths.set_ylabel('Number of Deaths')
     deaths.set_xlabel("Month Name")
     deaths.legend()
+    
+    #other death graph
+    deaths = fig.add_subplot(313)
+    x = death_d.keys()
+    names3 = []
+    values3 = []
+    for item in x:
+        names2.append(item)
+    y = death_d.values()
+    for items in y:
+        values2.append(items)
+    deaths.plot(names3, values3, color='red')
+    deaths.set_xlabel('Month Name')
+    deaths.set_ylabel('Number of Deaths')
+    deaths.set_title('Number of COVID-19 Deaths by Month in 2020')
+    deaths.set_ylim(0,60000)
 
 
     
