@@ -58,6 +58,24 @@ def recovered_dictionary(cur, conn):
             d[month] = total
     return d
 
+def death_dictionary(cur, conn):
+    cur.execute('SELECT DISTINCT month FROM DEATH')
+    dic = cur.fetchall()
+    item = []
+    for thing in dic:
+        months.append(item[0])
+    dics = {}
+    for month in months[:-1]:
+        cur.execute('SELECT deaths FROM DEATH WHERE month = ?', (month, ) )
+        val = cur.fetchall()
+        total = 0
+        for tup in val:
+            num = tup[0]
+            total += num
+        if month not in d:
+            d[month] = total
+    return dics
+
 def write_calculations(filename, d, data, dic):
     '''takes in a filename and 3 dictionaries where the key is the month and the value is the total. the function 
     writes to the filename the total cases,deaths, and recoveries for each month. the function doesn't return anything.'''
