@@ -81,7 +81,7 @@ def write_calculations(filename, d, data, dic):
         
 
 
-def graphs(cases_data,recov_d):
+def graphs(cases_data,recov_d, death_d):
     '''takes 3 dictionaries as input, each have the month as they key, and the value as the total for that month'''
     '''the function creates 3 subplots displayed in 1 column, 3 rows'''
     '''the function doesn't return anything but it shows the graphs and saves them as a png to COVID_graphs.png'''
@@ -100,7 +100,7 @@ def graphs(cases_data,recov_d):
         values.append(case_total)
 
 
-    cases = fig.add_subplot(311)
+    cases = fig.add_subplot(221)
     cases.grid()
     cases.plot(names,values, color = 'purple', marker = '*')
     cases.set_xlabel('Month', color = 'purple')
@@ -110,7 +110,7 @@ def graphs(cases_data,recov_d):
    
 
     # recoveries graph 
-    recov = fig.add_subplot(313)
+    recov = fig.add_subplot(222)
     x = recov_d.keys()
     names2 = []
     values2 = []
@@ -128,23 +128,8 @@ def graphs(cases_data,recov_d):
         anno = '{}'.format(y)
         plt.annotate(anno, (x,y), textcoords='offset points', xytext=(0, 10), ha='center')
 
-
-  
-    # deaths graph 
-    deaths = fig.add_subplot(312)
-    # stacked bar graph of deaths vs recoveries
-    width = 0.35
-    labels = names2
-    deaths_lst = values # using cases until deaths ready
-    recoveries = values2
-    deaths.bar(labels, deaths_lst, width, label='Deaths', color='red')
-    deaths.bar(labels, recoveries, width, bottom=deaths_lst, label='Recoveries', color='blue')
-    deaths.set_ylabel('Number of Deaths')
-    deaths.set_xlabel("Month Name")
-    deaths.legend()
-    
-    #other death graph
-    deaths = fig.add_subplot(313)
+    # death graph
+    deaths = fig.add_subplot(223)
     x = death_d.keys()
     names3 = []
     values3 = []
@@ -158,6 +143,19 @@ def graphs(cases_data,recov_d):
     deaths.set_ylabel('Number of Deaths')
     deaths.set_title('Number of COVID-19 Deaths by Month in 2020')
     deaths.set_ylim(0,60000)
+
+    barg = fig.add_subplot(224)
+    # stacked bar graph of deaths vs recoveries
+    width = 0.35
+    labels = names2
+    deaths_lst = values3 # using cases until deaths ready
+    recoveries = values2
+    barg.bar(labels, deaths_lst, width, label='Deaths', color='red')
+    barg.bar(labels, recoveries, width, bottom=deaths_lst, label='Recoveries', color='blue')
+    barg.set_ylabel('Number of Deaths')
+    barg.set_xlabel("Month Name")
+    barg.legend()
+    
 
 
     
@@ -174,7 +172,7 @@ def main():
     d = recovered_dictionary(cur,conn)
 
     # deaths dict goes here
-    dic = {}
+    dic = 
 
 
     graphs(data,d)
