@@ -36,6 +36,10 @@ def cases_calculations(cur,conn):
 
 
 def recovered_dictionary(cur, conn):
+    ''' This function takes cur and conn as parameters. It fetches distinct months 
+    from the Recovered table and adds them to a list. It then adds up the total new
+    recovered cases for each month, and adds the month to a dictionary as a key, and 
+    the total number of recoveries for that month as the value. It returns this dictionary. '''
     cur.execute('SELECT DISTINCT month FROM Recovered')
     data = cur.fetchall()
     months = []
