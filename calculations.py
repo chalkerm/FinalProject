@@ -63,10 +63,10 @@ def death_dictionary(cur, conn):
     dic = cur.fetchall()
     item = []
     for thing in dic:
-        months.append(item[0])
+        item.append(thing[0])
     dics = {}
-    for month in months[:-1]:
-        cur.execute('SELECT deaths FROM DEATH WHERE month = ?', (month, ) )
+    for month in months:
+        cur.execute('SELECT death FROM DEATH WHERE month = ?', (month, ) )
         val = cur.fetchall()
         total = 0
         for tup in val:
