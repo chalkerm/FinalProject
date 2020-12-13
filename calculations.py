@@ -72,8 +72,8 @@ def death_dictionary(cur, conn):
         for tup in val:
             num = tup[0]
             total += num
-        if month not in d:
-            d[month] = total
+        if month not in dics:
+            dics[month] = total
     return dics
 
 def write_calculations(filename, d, data, dic):
