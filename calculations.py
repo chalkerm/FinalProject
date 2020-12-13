@@ -104,7 +104,7 @@ def graphs(cases_data,recov_d, death_d):
     '''the function creates 3 subplots displayed in 1 column, 3 rows'''
     '''the function doesn't return anything but it shows the graphs and saves them as a png to COVID_graphs.png'''
 
-    fig = plt.figure(figsize=(5,12))
+    fig = plt.figure(figsize=(12,5))
    
 
 
@@ -174,6 +174,7 @@ def graphs(cases_data,recov_d, death_d):
     barg.bar(labels, recoveries, width, bottom=deaths_lst, label='Recoveries', color='blue')
     barg.set_ylabel('Number of Deaths')
     barg.set_xlabel("Month Name")
+    # barg.set_ylim(0,80000)
     barg.legend()
     
 
