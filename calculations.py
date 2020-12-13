@@ -114,11 +114,15 @@ def graphs(cases_data,recov_d):
     y = recov_d.values()
     for item in y:
         values2.append(item)
-    recov.plot(names2, values2, color='blue')
-    recov.set_xlabel('Month Name')
-    recov.set_ylabel('Number of Recovered Cases')
-    recov.set_title('Number of COVID-19 Recoveries by Month in 2020')
+    recov.plot(names2, values2, color='blue', marker = 'D')
+    recov.set_xlabel('Month Name', color='blue')
+    recov.set_ylabel('Number of Recovered Cases', color='blue')
+    recov.set_title('Number of COVID-19 Recoveries by Month in 2020', color='blue')
     recov.set_ylim(0,60000)
+    for x,y in zip(names2,values2):
+        anno = '{}'.format(y)
+        plt.annotate(anno, (x,y), textcoords='offset points', xytext=(0, 10), ha='center')
+
 
   
     # deaths graph 
@@ -126,9 +130,24 @@ def graphs(cases_data,recov_d):
 
 
     plt.tight_layout()
-    plt.show()
-    fig.savefig("COVID_graphs.png")
+    # plt.show()
+    # fig.savefig("COVID_graphs.png")
 
+    # stacked bar graph of deaths vs recoveries
+    figure, ax = plt.subplots()
+    #ax = fig.add_subplot(314)
+    width = 0.35
+    labels = names2
+    deaths = values # using cases until deaths ready
+    recoveries = values2
+    ax.bar(labels, deaths, width, label='Deaths', color='red')
+    ax.bar(labels, recoveries, width, bottom=deaths, label='Recoveries', color='blue')
+    ax.set_ylabel('Number of Deaths')
+    ax.set_xlabel("Month Name")
+    ax.legend()
+    
+    plt.show()
+    
 
 
 
