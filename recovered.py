@@ -6,7 +6,8 @@ import matplotlib.pyplot as plt
 
 # Create Database
 def setUpDatabase(db_name):
-    ''' This function sets up a database in the current location. '''
+    ''' This function sets up a database in the current location. It will return
+    a cursor and connector, cur and conn. '''
 
     path = os.path.dirname(os.path.abspath(__file__))
     conn = sqlite3.connect(path+'/'+ db_name)
@@ -14,13 +15,12 @@ def setUpDatabase(db_name):
     return cur, conn
 
 def create_month_table(cur, conn):
-    ''' This function creates a table within the database that has the number of the 
-    month (i.e. January is the first month, '01') and the name of the month. This function
-    will be used to grab the name of the month and insert it into the recovered table 
-    to allow for easier calculations late. '''
+    ''' This function takes in parameters, cur and conn and creates a table within the 
+    database that has the number of the month (i.e. January is the first month, '01') and 
+    the name of the month. This function will be used to grab the name of the month and 
+    insert it into the recovered table to allow for easier calculations later. '''
 
-    cur.execute('DROP TABLE IF EXISTS Months')
-    cur.execute('CREATE TABLE Months (key TEXT PRIMARY KEY, month_name TEXT)')
+    cur.execute('CREATE TABLE IF NOT EXISTS Months (key TEXT PRIMARY KEY, month_name TEXT)')
     i = 1
     month_lst = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
     while i <= 12:
@@ -34,8 +34,8 @@ def create_month_table(cur, conn):
     conn.commit()
 
 def create_recovered_table(cur, conn):
-    ''' This function creates the table for COVID recovery data, located in the 
-    database. '''
+    ''' This function takes in cur and conn as parameters and creates the table for COVID 
+    recovery data, located in the database. '''
 
     cur.execute('CREATE TABLE IF NOT EXISTS Recovered (key TEXT PRIMARY KEY, date TEXT UNIQUE, month TEXT, new_recovered INTEGER, total_recovered INTEGER)')
     conn.commit()
@@ -43,8 +43,8 @@ def create_recovered_table(cur, conn):
 def create_request_url(state, start_date, end_date):
     ''' This function creates the URL for the API request. It requires information on 
     the state (in the US) for which data will be gathered, as well as a start date 
-    and end date for the time period it will be getting data for. All required parameters
-    should be strings.
+    and end date for the time period it will be getting data for. All required parameters,
+    state, start_date, and end_date should be strings. It returns the request URL as a string.
     Date should be in the format YYYY-MM-DD '''
 
     base_url = "https://api.covid19tracking.narrativa.com/api/country/us"
@@ -54,7 +54,8 @@ def create_request_url(state, start_date, end_date):
 def get_data():
     ''' This function executes the API request for each month in our designated time 
     period. The month must be in the form of a string for the API request url.
-    After each execution, it adds the requested data to a dictionary. '''
+    After each execution, it adds the requested data to a dictionary, and returns the 
+    dictionary with the data in it. '''
 
     current_month = 5
     end_month = current_month + 1
@@ -124,8 +125,8 @@ def keep_running(cur, conn, d):
 
 
 def main():
-    # Sets up the database and tables. Makes API requests and stores information in dictionary.
-    # Loops through dictionary and adds appropriate data to Recovered table, 25 items at a time.
+    ''' Sets up the database and tables. Makes API requests and stores information in dictionary.
+    Loops through dictionary and adds appropriate data to Recovered table, 25 items at a time. '''
     cur, conn = setUpDatabase('covid_tracking.db')
     create_month_table(cur, conn)
     create_recovered_table(cur, conn)
