@@ -190,10 +190,10 @@ def main():
     d = recovered_dictionary(cur,conn)
 
     # deaths dict goes here
-    dic = 
+    dic = death_dictionary(cur, conn)
 
 
-    graphs(data,d)
+    graphs(data,d, dic)
     write_calculations("calculations_outfile", d,data,dic)
     
 
