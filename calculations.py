@@ -65,7 +65,7 @@ def death_dictionary(cur, conn):
     for thing in dic:
         item.append(thing[0])
     dics = {}
-    for month in months:
+    for month in item:
         cur.execute('SELECT death FROM DEATH WHERE month = ?', (month, ) )
         val = cur.fetchall()
         total = 0
@@ -152,15 +152,17 @@ def graphs(cases_data,recov_d, death_d):
     names3 = []
     values3 = []
     for item in x:
-        names2.append(item)
+        names3.append(item)
     y = death_d.values()
     for items in y:
-        values2.append(items)
-    deaths.plot(names3, values3, color='red')
-    deaths.set_xlabel('Month Name')
-    deaths.set_ylabel('Number of Deaths')
-    deaths.set_title('Number of COVID-19 Deaths by Month in 2020')
+        values3.append(items)
+    deaths.plot(names3, values3, color='red', marker='^')
+    deaths.set_xlabel('Month Name', color='red')
+    deaths.set_ylabel('Number of Deaths', color='red')
+    deaths.set_title('Number of COVID-19 Deaths by Month in 2020', color='red')
     deaths.set_ylim(0,60000)
+
+
 
     barg = fig.add_subplot(224)
     # stacked bar graph of deaths vs recoveries
