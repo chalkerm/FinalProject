@@ -175,7 +175,6 @@ def graphs(cases_data,recov_d, death_d):
     # stacked bar graph of deaths vs recoveries
     width = 0.35
     labels = names2
-    values3.reverse()
     deaths_lst = values3
     recoveries = values2
     barg.bar(labels, deaths_lst, width, label='Deaths', color='red')
