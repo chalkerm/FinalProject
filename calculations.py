@@ -59,7 +59,7 @@ def recovered_dictionary(cur, conn):
     return d
 
 def death_dictionary(cur, conn):
-        ''' This function takes cur and conn as parameters. It fetches distinct months 
+    ''' This function takes cur and conn as parameters. It fetches distinct months 
     from the death table and adds them to a list. It then adds up the total new
     death confirmed cases for each month, and adds the month to a dictionary as a key, and 
     the total number of confirmed deaths for that month as the value. It returns this dictionary. '''
@@ -105,7 +105,7 @@ def write_calculations(filename, d, data, dic):
 
 def graphs(cases_data,recov_d, death_d):
     '''takes 3 dictionaries as input, each have the month as they key, and the value as the total for that month'''
-    '''the function creates 3 subplots displayed in 2 columns, 2 rows'''
+    '''the function creates 4 subplots displayed in 2 columns, 2 rows'''
     '''the function doesn't return anything but it shows the graphs and saves them as a png to COVID_graphs.png'''
 
     fig = plt.figure(figsize=(12,5))
@@ -166,11 +166,8 @@ def graphs(cases_data,recov_d, death_d):
     deaths.set_xlabel('Month Name', color='red')
     deaths.set_ylabel('Number of Deaths', color='red')
     deaths.set_title('Number of COVID-19 Deaths by Month in 2020', color='red')
-<<<<<<< HEAD
-    # deaths.set_ylim(0,60000)
-=======
     deaths.set_ylim(0,2000)
->>>>>>> f05373236714fac1d352c1e924814a56355c456c
+
 
 
 
