@@ -13,8 +13,7 @@ def setUpDatabase(db_name):
 
 def create_month_table(cur, conn):
     ''' This function takes in cursor and connector (cur and conn) and creates a table within the 
-    database that has the number of the month (i.e. January is the first month, '01') and 
-    the name of the month. This function will be used to retrive the name of the month and 
+    database that has the name of the month. This function will be used to retrive the name of the month and 
     insert it into the death table to allow for easier calculations. '''
     cur.execute('CREATE TABLE Months (key TEXT PRIMARY KEY, month_name TEXT)')
     i = 1
@@ -37,7 +36,7 @@ def create_death_table(cur, conn):
 
 def get_data():
     ''' This function creates the URL for the API request. It requires information on 
-    the state- michigan (in the US) for which data will be gathered. It returns the request URL as a string. ''' 
+    the state- michigan (in the US) for which data will be gathered. It returns the data. ''' 
     base_url = "https://api.covidtracking.com/v1/states/mi/daily.json"
     r = requests.get(base_url)
     data = json.loads(r.text)
@@ -99,5 +98,4 @@ def main():
 
 if __name__ == "__main__":
     main()
-
 
