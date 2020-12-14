@@ -66,7 +66,7 @@ def death_dictionary(cur, conn):
         item.append(thing[0])
     dics = {}
     for month in item:
-        cur.execute('SELECT death FROM DEATH WHERE month = ?', (month, ) )
+        cur.execute('SELECT deathConfirmed FROM DEATH WHERE month = ?', (month, ) )
         val = cur.fetchall()
         total = 0
         for tup in val:
@@ -160,7 +160,7 @@ def graphs(cases_data,recov_d, death_d):
     deaths.set_xlabel('Month Name', color='red')
     deaths.set_ylabel('Number of Deaths', color='red')
     deaths.set_title('Number of COVID-19 Deaths by Month in 2020', color='red')
-    #deaths.set_ylim(0,60000)
+    deaths.set_ylim(0,2000)
 
 
 
