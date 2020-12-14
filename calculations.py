@@ -59,6 +59,10 @@ def recovered_dictionary(cur, conn):
     return d
 
 def death_dictionary(cur, conn):
+        ''' This function takes cur and conn as parameters. It fetches distinct months 
+    from the death table and adds them to a list. It then adds up the total new
+    death confirmed cases for each month, and adds the month to a dictionary as a key, and 
+    the total number of confirmed deaths for that month as the value. It returns this dictionary. '''
     cur.execute('SELECT DISTINCT month FROM DEATH')
     dic = cur.fetchall()
     item = []
