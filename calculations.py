@@ -160,6 +160,8 @@ def graphs(cases_data,recov_d, death_d):
     y = death_d.values()
     for items in y:
         values3.append(items)
+    names3.reverse()
+    values3.reverse()
     deaths.plot(names3, values3, color='red', marker='^')
     deaths.set_xlabel('Month Name', color='red')
     deaths.set_ylabel('Number of Deaths', color='red')
