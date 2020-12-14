@@ -101,7 +101,7 @@ def write_calculations(filename, d, data, dic):
 
 def graphs(cases_data,recov_d, death_d):
     '''takes 3 dictionaries as input, each have the month as they key, and the value as the total for that month'''
-    '''the function creates 3 subplots displayed in 1 column, 3 rows'''
+    '''the function creates 3 subplots displayed in 2 columns, 2 rows'''
     '''the function doesn't return anything but it shows the graphs and saves them as a png to COVID_graphs.png'''
 
     fig = plt.figure(figsize=(12,5))
@@ -160,7 +160,7 @@ def graphs(cases_data,recov_d, death_d):
     deaths.set_xlabel('Month Name', color='red')
     deaths.set_ylabel('Number of Deaths', color='red')
     deaths.set_title('Number of COVID-19 Deaths by Month in 2020', color='red')
-    deaths.set_ylim(0,60000)
+    #deaths.set_ylim(0,60000)
 
 
 
@@ -168,7 +168,8 @@ def graphs(cases_data,recov_d, death_d):
     # stacked bar graph of deaths vs recoveries
     width = 0.35
     labels = names2
-    deaths_lst = values3 # using cases until deaths ready
+    values3.reverse()
+    deaths_lst = values3
     recoveries = values2
     barg.bar(labels, deaths_lst, width, label='Deaths', color='red')
     barg.bar(labels, recoveries, width, bottom=deaths_lst, label='Recoveries', color='blue')
