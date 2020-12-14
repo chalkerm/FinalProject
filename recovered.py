@@ -6,8 +6,8 @@ import matplotlib.pyplot as plt
 
 # Create Database
 def setUpDatabase(db_name):
-    ''' This function sets up a database in the current location. It will return
-    a cursor and connector, cur and conn. '''
+    ''' This function sets up a database in the current location. It takes in 
+    the name of the database and will return a cursor and connector, cur and conn. '''
 
     path = os.path.dirname(os.path.abspath(__file__))
     conn = sqlite3.connect(path+'/'+ db_name)
@@ -79,15 +79,17 @@ def get_data():
     return d
     
 def add_recovered_data(cur, conn, d):
-    ''' This function loops through the data from the dictionary returned in get_data
-    and adds the necessary data to the Recovered table. For each date in the time period,
+    ''' This function takes in cur, conn, and a dictionary (returned by get_data), and loops through 
+    the data from the dictionary returned in get_data and adds the necessary data to the Recovered table. 
+    For each date in the time period,
     it adds:
     1. a primary key (integer)
     2. date (string)
     3. month name (string selected from Month table)
-    4. number of new people who recovered from COVID on that date
-    5. total number of people recovered from COVID in Michigan to date
+    4. number of new people who recovered from COVID on that date (integer)
+    5. total number of people recovered from COVID in Michigan to date (integer)
     This function adds 25 unique pieces of data into the table at a time. '''
+
     cur.execute('SELECT COUNT(*) FROM Recovered')
     row = cur.fetchone()[0]
     final = row + 25
